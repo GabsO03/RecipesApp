@@ -64,11 +64,11 @@ export class CardComponent implements OnInit{
       )  
       .subscribe ( wasDeleted =>{
         if ( wasDeleted ) {
-          this.router.navigate(['/recetas'])
+          // this.router.navigate(['/recetas'])
+          location.reload();
           this.showSnackbar(`${ this.receta.name } succesfully deleted!`)
         }
 
-        // location.reload();
       })
     });
   }
