@@ -2,14 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RecetasService } from '../../services/recetas.service';
 import { Receta } from '../../interfaces/receta.interface';
-import { debounceTime, delay, filter, switchMap, tap } from 'rxjs';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { debounceTime, filter, switchMap, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
-import { AuthService } from '../../../auth/services/auth.service';
-import { CapitalizeWordPipe } from '../../pipes/category-capital.pipe';
 
 @Component({
   selector: 'app-new-page',
@@ -201,13 +198,14 @@ export class NewPageComponent implements OnInit {
 
       if ((!this.existingIngredients || this.existingIngredients!.length === 0) && this.newIngredient.value) {
         this.recetasService.addIngredient(this.newIngredient.value).subscribe(respuesta => {
-          respuesta? agregado = true : false;
+          agregado = respuesta? true : false;
         });
       }
 
       const newIngredient = this.newIngredient.value;
 
       if (agregado) {
+
         this.ingredients.push(
           this.fb.control( newIngredient )
         );
