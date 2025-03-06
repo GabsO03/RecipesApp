@@ -130,6 +130,10 @@
           <mat-autocomplete autoActiveFirstOption
           #auto="matAutocomplete"
           (optionSelected)="onAddToIngredients()">
+            <mat-option *ngIf="newIngredient.value && !yaExiste"
+            [value]="newIngredient.value">
+              {{ newIngredient.value | capitalizeWord }}
+            </mat-option>
             <mat-option *ngFor="let ingrediente of existingIngredients" [value]="ingrediente">
                 {{ ingrediente | capitalizeWord }}
             </mat-option>

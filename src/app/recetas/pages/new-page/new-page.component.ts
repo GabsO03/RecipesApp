@@ -19,6 +19,7 @@ export class NewPageComponent implements OnInit {
   public newIngredient: FormControl = new FormControl('');
   public newCategoria: FormControl = new FormControl('');
   public existingIngredients?:string[];
+  public yaExiste: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -168,13 +169,9 @@ export class NewPageComponent implements OnInit {
           this.existingIngredients = ingredientes || [];
 
           //Esto para que no se vea doble
-          const yaExiste = this.existingIngredients.some(ingr => 
+          this.yaExiste = this.existingIngredients.some(ingr => 
             ingr.toLowerCase().localeCompare(this.newIngredient.value.toLowerCase(), 'es', { sensitivity: 'base' }) === 0
           );
-
-          if (!yaExiste) {
-            this.existingIngredients.unshift(this.newIngredient.value);
-          }
       })
     })
   }
@@ -193,26 +190,42 @@ export class NewPageComponent implements OnInit {
       return;
     }
     else {
-      let agregado = false;
       if ( this.newIngredient.invalid ) return;
-
-      if ((!this.existingIngredients || this.existingIngredients!.length === 0) && this.newIngredient.value) {
-        this.recetasService.addIngredient(this.newIngredient.value).subscribe(respuesta => {
-          agregado = respuesta? true : false;
-        });
-      }
 
       const newIngredient = this.newIngredient.value;
 
-      if (agregado) {
+      if (newIngredient) {//Para que no haga nada si está vacío
+        const estaEnArray = this.ingredients.value.some((ing: string) => ing.toLowerCase() === newIngredient.toLowerCase()
+        ); //Esto para que no se ejecute nada si ya está en el array y no se ingrese doble
+        let existeEnBd = false; 
+  
+        if (!estaEnArray) {
 
-        this.ingredients.push(
-          this.fb.control( newIngredient )
-        );
+          if (this.existingIngredients && this.existingIngredients.length > 0) {
+            existeEnBd = this.existingIngredients.some((ing: string) => ing.toLowerCase() === newIngredient.toLowerCase());
+          }; //Por si directamente no existe en la bbdd
+
+          if (existeEnBd) { //Si no está lo agrega
+            this.ingredients.push(
+              this.fb.control( newIngredient )
+            );
+          }
+          else {
+            this.recetasService.addIngredient(this.newIngredient.value).subscribe(respuesta => {
+              if (respuesta) {
+                this.ingredients.push(
+                  this.fb.control( newIngredient )
+                );
+              }
+            });
+          }
+        }
+
+        this.newIngredient.setValue(null);
+        this.existingIngredients = [];
+
       }
 
-      this.newIngredient.setValue(null);
-      this.existingIngredients = [];
     }
   }
 

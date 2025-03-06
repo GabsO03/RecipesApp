@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.prod';
-import { catchError, debounceTime, delay, map, Observable, of, tap } from 'rxjs';
+import { catchError, delay, map, Observable, of, tap } from 'rxjs';
 import { Receta } from '../interfaces/receta.interface';
 
 @Injectable({providedIn: 'root'})
@@ -18,7 +18,7 @@ export class RecetasService {
     )
   }
 
-  addIngredient( ingrediente: string ): Observable<string> {
+  addIngredient( ingrediente: string ): Observable<string | false> {
     return this.httpClient.post<string>(`${this.baseURL}/api/v1/ingredients`, { name: ingrediente })
     .pipe(
       catchError(error => of('No se pudo'))
