@@ -25,7 +25,6 @@ export class CardComponent implements OnInit{
 
   constructor(
     private recetasService: RecetasService,
-    private activatedRoute: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
     private snackbar: MatSnackBar
@@ -64,9 +63,12 @@ export class CardComponent implements OnInit{
         )
       )  
       .subscribe ( wasDeleted =>{
-        if ( wasDeleted )
+        if ( wasDeleted ) {
+          this.router.navigate(['/recetas'])
           this.showSnackbar(`${ this.receta.name } succesfully deleted!`)
-          location.reload();
+        }
+
+        // location.reload();
       })
     });
   }

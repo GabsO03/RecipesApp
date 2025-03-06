@@ -40,7 +40,6 @@ export class RecetaPageComponent implements OnInit {
       if (!receta) return this.router.navigate(['/recetas/list']);
 
       this.receta = receta;
-      console.log(receta);
       return;
     })
   }

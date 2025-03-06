@@ -13,7 +13,7 @@ export class AppComponent { // implements OnInit {
 
   ngOnInit(): void {
     this.authService.checkAuthenticacion()
-    .subscribe( () => console.log('Finalizada la validación de autenticación'))
+    .subscribe( () => true)
   }
 
 }

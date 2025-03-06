@@ -90,7 +90,6 @@ export class NewPageComponent implements OnInit {
   onSubmit(): void{
     if ( this.recipeForm.invalid ){
       this.recipeForm.markAllAsTouched();
-      console.log(this.recipeForm);
       return;
     }
 

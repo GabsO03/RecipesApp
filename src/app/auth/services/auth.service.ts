@@ -40,11 +40,9 @@ export class AuthService {
     
 
     login (user: string, email: string):Observable<User> {
-        console.log(user, email);
         return this.httpClient.get<any>(`${ this.baseUrl }/api/v1/users?user=${ user }&email=${ email }`)
         .pipe(
             map( (respuesta) => {
-                // console.log(respuesta.data);
                 const user = respuesta.data;
                 this.user = user
                 localStorage.setItem('token', user.id.toString())
