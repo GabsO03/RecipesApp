@@ -65,8 +65,8 @@ export class CardComponent implements OnInit{
       )  
       .subscribe ( wasDeleted =>{
         if ( wasDeleted )
-          location.reload();
           this.showSnackbar(`${ this.receta.name } succesfully deleted!`)
+          location.reload();
       })
     });
   }

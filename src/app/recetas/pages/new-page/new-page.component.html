@@ -70,7 +70,7 @@
               <div *ngFor="let category of categories.controls; let i = index" 
                     class="flex items-center bg-gray-100 text-gray-800 font-medium px-3 py-1 rounded-lg text-sm">
                 <p>{{ category.value | capitalizeWord }}</p>
-                <button type="button" (click)="onDeleteIngredient(i)"> <mat-icon>close</mat-icon> </button>
+                <button type="button" (click)="onDeleteCategoria(i)"> <mat-icon>close</mat-icon> </button>
               </div>
             </div>   
           </div>
