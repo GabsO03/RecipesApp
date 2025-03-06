@@ -1,0 +1,19 @@
+<div *ngIf="!animar; else animacion">
+  <h2 mat-dialog-title>¿Está seguro de eliminar {{ data.name }}?</h2>
+  <mat-dialog-content>
+    <p>Si elimina no podrá recuperar la receta</p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+      <button mat-button (click)="onNoClick()">No Gracias</button>
+      <span class="spacer"></span>
+      <button mat-button (click)="onConfirm()"cdkFocusInitial>De acuerdo</button>
+  </mat-dialog-actions>
+</div>
+
+<ng-template #animacion>
+  <div class="bg-transparent w-full">
+    <img id="eliminando" class="rounded-3xl object-cover" 
+         src="bote-de-basura.gif" alt="eliminando">
+  </div>
+</ng-template>

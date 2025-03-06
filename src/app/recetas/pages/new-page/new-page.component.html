@@ -1,0 +1,169 @@
+<div class="flex">
+  <h3 class="text-2xl mb-3 mr-3 font-nunito font-medium">
+    {{ currentReceta.id ? 'Editar' : 'Agregar' }}
+    receta
+    <small *ngIf="currentReceta.id"> {{currentReceta.name }}</small>
+  </h3>
+  <button *ngIf="currentReceta.id" 
+  [routerLink]="['/recetas/', currentReceta.id]"
+  class="mb-1 flex items-center justify-center w-10 h-10 text-white bg-orange-600 rounded-full group hover:bg-opacity-100 focus:outline-none">
+      <mat-icon class="text-white">visibility</mat-icon>
+  </button>
+</div>
+
+  
+<mat-divider></mat-divider>
+
+<div class="mt-3 grid grid-cols-1 lg:grid-cols-2 gap-4 font-nunito">
+  <div class="w-full">
+    <mat-card>
+      <mat-card-content class="bg-[#ffe3d1] rounded-xl">
+        <form class="flex flex-col" [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+          <div class="flex justify-between">
+              <mat-form-field class="w-1/2 lg:w-full mr-0 lg:mr-2">
+                  <mat-label>Título de la receta</mat-label>
+                  <input
+                    matInput
+                    type="text"
+                    required
+                    formControlName="name"
+                  />
+                  <span *ngIf="isValidField('name')" class="text-red-00">
+                    {{ getFieldError('name') }}
+                  </span>
+                </mat-form-field>
+    
+                <mat-form-field class="w-auto lg:w-full">
+                  <mat-label>Tiempo de preparación</mat-label>
+                  <input
+                  matInput
+                  type="number"
+                  required
+                  formControlName="time"
+                  />
+                  <span *ngIf="isValidField('time')" class="text-red-00">
+                    {{ getFieldError('time') }}
+                  </span>
+              </mat-form-field>
+          </div>
+
+          <mat-form-field class="w-full">
+              <mat-label>Descripción breve</mat-label>
+              <input
+                matInput
+                type="text"
+                required
+                formControlName="description"
+                />
+              <span *ngIf="isValidField('description')" class="text-red-00">
+                {{ getFieldError('description') }}
+              </span>
+          </mat-form-field>
+
+
+          <div class="mb-3 flex flex-col w-full">
+            <label class="text-gray-800 font-medium">
+              Categorias {{ categories.controls.length === 0 ? '( Tus categorias se verán aquí )' : '' }}
+            </label>
+            
+            <div class="w-full flex flex-wrap gap-2 mb-2" formArrayName="categories">
+              <div *ngFor="let category of categories.controls; let i = index" 
+                    class="flex items-center bg-gray-100 text-gray-800 font-medium px-3 py-1 rounded-lg text-sm">
+                <p>{{ category.value | capitalizeWord }}</p>
+                <button type="button" (click)="onDeleteIngredient(i)"> <mat-icon>close</mat-icon> </button>
+              </div>
+            </div>   
+          </div>
+
+          <div class="flex items-start justify-start py-2">
+            <mat-form-field class="w-2/3 mr-5">
+              <mat-label>Agregar categoría</mat-label>
+              <input
+              matInput
+              type="text"
+              [formControl]="newCategoria"
+              />
+              <span *ngIf="isValidField('categories')" class="text-red-00">
+                {{ getFieldError('categories') }}
+              </span>
+            </mat-form-field>
+            <button mat-flat-button class="mt-2" (click)="onAddToCategorias()"
+            type="button">Agregar</button>
+          </div>
+
+
+
+          <mat-form-field class="w-full">
+              <mat-label>Instrucciones</mat-label>
+              <textarea
+                matInput
+                required
+                formControlName="instructions"
+              ></textarea>
+              <span *ngIf="isValidField('instructions')" class="text-red-00">
+                {{ getFieldError('instructions') }}
+              </span>
+          </mat-form-field>
+
+          <mat-form-field class="col-12 sm:col-6">
+            <mat-label>Alternative Image</mat-label>
+            <input
+            matInput
+            type="text"
+            formControlName="alt_img"
+            />
+            <span *ngIf="isValidField('alt_img')" class="text-red-00">
+              {{ getFieldError('alt_img') }}
+            </span>
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+              <mat-label>Agregar ingrediente</mat-label>
+              <input
+                matInput
+                type="text"
+                [formControl]="newIngredient"
+                (input)="consigueIngredientes()"
+                [matAutocomplete]="auto"
+              />
+          </mat-form-field>
+          <mat-autocomplete autoActiveFirstOption
+          #auto="matAutocomplete"
+          (optionSelected)="onAddToIngredients()">
+            <mat-option *ngFor="let ingrediente of existingIngredients" [value]="ingrediente">
+                {{ ingrediente | capitalizeWord }}
+            </mat-option>
+          </mat-autocomplete>
+          <div class="mb-3 flex flex-col w-full">
+            <label class="text-gray-800 font-medium">
+              Ingredientes {{ ingredients.controls.length === 0 ? '( Tus ingredientes se verán aquí )' : '' }}
+            </label>
+            
+            <div class="w-full flex flex-wrap gap-2" formArrayName="ingredients">
+              <div *ngFor="let ingredient of ingredients.controls; let i = index" 
+                    class="flex items-center bg-gray-100 text-gray-800 font-medium px-3 py-1 rounded-lg text-sm">
+                <p>{{ ingredient.value | capitalizeWord }}</p>
+                <button type="button" (click)="onDeleteIngredient(i)"> <mat-icon>close</mat-icon> </button>
+              </div>
+            </div>   
+          </div>
+
+        </form>
+
+        <div class="flex justify-between">
+          <button mat-flat-button
+          *ngIf="currentReceta.id"
+          (click)="onDeleteReceta()"
+          > Borrar </button>
+          <span></span>
+          <button mat-flat-button (click)="onSubmit()"> <mat-icon>save</mat-icon> Guardar </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div style="height: 85vh;" class="rounded-xl">
+    <img [src]="currentReceta | recipeImage" alt="imagen de la receta" mat-card-image
+    class="w-full h-full object-cover">
+  </div>
+</div>

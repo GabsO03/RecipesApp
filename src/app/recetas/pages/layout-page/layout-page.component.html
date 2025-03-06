@@ -1,0 +1,83 @@
+<aside id="drawer-navigation" class="fixed top-0 left-0 z-50 w-64 h-screen flex flex-col justify-between p-4 overflow-y-auto transition-transform -translate-x-full bg-[#321f0bf1]">
+
+  <div class="text-white">
+    <h5 id="drawer-navigation-label" class="text-2xl font-semibold uppercase">Menu</h5>
+    <button type="button" (click)="toggleDrawer()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center" >
+        <mat-icon>close</mat-icon>
+        <span class="sr-only">Close menu</span>
+    </button>
+    
+    <div class="h-full mt-5 pb-4 overflow-y-auto">
+      <ul class="space-y-2 font-medium">
+        <li *ngFor="let item of sidebarItems">
+          <a [routerLink]="item.url" class="flex items-center justify-between w-1/2 text-xl">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <p> {{ item.label }} </p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-4 text-lg text-white list-none divide-y divide-gray-500 rounded-sm shadow-sm">
+    <div class="pb-3 px-2">
+      <p>
+        {{ user?.user }}
+      </p>
+      <p class="font-medium truncate">
+        {{ user?.email }}
+      </p>
+    </div>
+    <div class="py-1">
+      <button
+      (click)="onLogout()"
+      class="block p-2 rounded-lg text-lg hover:bg-gray-100 hover:text-gray-900">Sign out</button>
+    </div>
+  </div>
+  
+</aside>
+
+<nav class="fixed top-0 z-30 w-full bg-[#63300e] border-b border-gray-200">
+  <div class="px-3 py-3 lg:px-5 lg:pl-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center justify-start rtl:justify-end">
+        <button (click)="toggleDrawer()" type="button" class="inline-flex items-center p-2 text-sm text-gray-100 rounded-lg hover:bg-gray-200 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-200">
+            <span class="sr-only">Open sidebar</span>
+            <mat-icon>menu</mat-icon>
+         </button>
+      </div>
+      <div class="flex items-center">
+        <div id="dropdown-user-container" class="flex flex-col items-center ms-3">
+          <div>
+            <button type="button" class="flex text-lg bg-gray-100 rounded-full focus:ring-4 focus:ring-gray-300" (click)="toggleUserMenu()">
+              <span class="sr-only">Open user menu</span>
+              <mat-icon>person</mat-icon>
+            </button>
+          </div>
+
+          <div class="absolute hidden top-10 right-3 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm" id="dropdown-user">
+            <div class="px-4 py-3">
+              <p class="text-sm text-gray-900">
+                {{ user?.user }}
+              </p>
+              <p class="text-sm font-medium text-gray-900 truncate">
+                {{ user?.email }}
+              </p>
+            </div>
+            <div class="py-1">
+                <button
+                (click)="onLogout()"
+                class="block px-4 py-2 text-sm text-gray-700" role="menuitem">
+                  Sign out
+                </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="pt-20 pb-8 px-5 bg-[#ffac53]">
+  <router-outlet></router-outlet>
+</div>

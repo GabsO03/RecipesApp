@@ -1,0 +1,70 @@
+<div class="group rounded-xl overflow-hidden shadow-lg flex flex-col">
+    <div class="relative">
+      <div class="h-150 w-full">
+        <div class="w-full lg:h-56 md:h-60 sm:h-64 overflow-hidden">
+          <img class="w-full h-full object-cover"
+            [src]="receta | recipeImage"
+            alt="{{ receta.name }}">
+        </div>
+        <div
+            class="group-hover:opacity-0 transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gradient-to-b from-black to-transparent opacity-75">
+        </div>
+        <mat-card-actions class="absolute top-0 right-0 p-3">
+            <div class="group">
+                <button (click)="toggleMenu('speed-dial-menu-dropdown' + index)" class="mr-1 flex items-center justify-center w-10 h-10 text-white bg-orange-600 rounded-full group hover:bg-opacity-100 focus:outline-none">
+                    <mat-icon class="text-white">more_vert</mat-icon>
+                </button>
+
+                <div id="speed-dial-menu-dropdown{{index}}" class="flex flex-col justify-end hidden py-1 mb-4 space-y-2 rounded-lg shadow-xs">
+                    <ul class="text-sm text-gray-500 dark:text-[#3124]">
+                        <li *ngIf="esAdmin">
+                            <button 
+                            [routerLink]="['/recetas/edit', receta.id]"
+                            class="mb-1 flex items-center justify-center w-10 h-10 text-white bg-orange-600 rounded-full group hover:bg-opacity-100 focus:outline-none">
+                                <mat-icon class="text-white">edit</mat-icon>
+                            </button>
+                        </li>
+                        <li *ngIf="esAdmin">
+                            <button 
+                            (click)="onDeleteReceta()"
+                            class="mb-1 flex items-center justify-center w-10 h-10 text-white bg-orange-600 rounded-full group hover:bg-opacity-100 focus:outline-none">
+                                <mat-icon class="text-white">delete</mat-icon>
+                            </button>
+                        </li>
+                        <li>
+                            <button 
+                            [routerLink]="['/recetas/', receta.id]"
+                            class="mb-1 flex items-center justify-center w-10 h-10 text-white bg-orange-600 rounded-full group hover:bg-opacity-100 focus:outline-none">
+                                <mat-icon class="text-white">visibility</mat-icon>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </mat-card-actions>
+      </div>
+    </div>
+    <div class="px-6 py-4 mb-auto bg-[#63300e] group-hover:bg-[#743911] font-raleway">
+        <a [routerLink]="['/recetas/', receta.id]"
+        class="font-medium text-white text-xl lg:text-2xl block hover:text-[#eec5b0] transition duration-300 ease-in-out mb-2">
+          {{ receta.name }}
+        </a>
+        <p class="inline-block text-white text-lg">{{ receta.description }}</p>
+
+        <div class="flex flex-wrap justify-between">
+          <span class="py-1 text-xs font-regular text-white mr-1 flex flex-row items-center">
+            <mat-icon>timer</mat-icon>
+            <span class="ml-1"> {{ receta.time }} </span>
+          </span>
+  
+          <div class="py-3 flex flex-row items-center justify-start">
+            <span *ngFor="let category of receta.categories"
+            class="px-2 py-1 mr-1 rounded bg-orange-600 text-xs text-white">
+                {{ category | capitalizeWord }}
+            </span>
+          </div>
+        </div>
+
+    </div>
+</div>
