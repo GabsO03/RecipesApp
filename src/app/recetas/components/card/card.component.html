@@ -59,9 +59,9 @@
           </span>
   
           <div class="py-3 flex flex-row items-center justify-start">
-            <span *ngFor="let category of receta.categories"
+            <span *ngFor="let tag of receta.tags"
             class="px-2 py-1 mr-1 rounded bg-orange-600 text-xs text-white">
-                {{ category | capitalizeWord }}
+                {{ tag | capitalizeWord }}
             </span>
           </div>
         </div>

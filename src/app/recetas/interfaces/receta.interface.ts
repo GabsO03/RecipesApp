@@ -3,7 +3,7 @@ export interface Receta {
     name:         string;
     description:  string;
     ingredients:  string[];
-    categories:   string[];
+    tags:   string[];
     time:         string;
     instructions: string[];
     alt_img?:     string;

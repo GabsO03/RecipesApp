@@ -63,13 +63,13 @@
 
           <div class="mb-3 flex flex-col w-full">
             <label class="text-gray-800 font-medium">
-              Categorias {{ categories.controls.length === 0 ? '( Tus categorias se verán aquí )' : '' }}
+              Etiquetas {{ tags.controls.length === 0 ? '( Tus etiquetas se verán aquí )' : '' }}
             </label>
             
-            <div class="w-full flex flex-wrap gap-2 mb-2" formArrayName="categories">
-              <div *ngFor="let category of categories.controls; let i = index" 
+            <div class="w-full flex flex-wrap gap-2 mb-2" formArrayName="tags">
+              <div *ngFor="let tag of tags.controls; let i = index" 
                     class="flex items-center bg-gray-100 text-gray-800 font-medium px-3 py-1 rounded-lg text-sm">
-                <p>{{ category.value | capitalizeWord }}</p>
+                <p>{{ tag.value | capitalizeWord }}</p>
                 <button type="button" (click)="onDeleteCategoria(i)"> <mat-icon>close</mat-icon> </button>
               </div>
             </div>   
@@ -77,17 +77,17 @@
 
           <div class="flex items-start justify-start py-2">
             <mat-form-field class="w-2/3 mr-5">
-              <mat-label>Agregar categoría</mat-label>
+              <mat-label>Agregar etiqueta</mat-label>
               <input
               matInput
               type="text"
-              [formControl]="newCategoria"
+              [formControl]="newEtiqueta"
               />
-              <span *ngIf="isValidField('categories')" class="text-red-00">
-                {{ getFieldError('categories') }}
+              <span *ngIf="isValidField('tags')" class="text-red-00">
+                {{ getFieldError('tags') }}
               </span>
             </mat-form-field>
-            <button mat-flat-button class="mt-2" (click)="onAddToCategorias()"
+            <button mat-flat-button class="mt-2" (click)="onAddToTags()"
             type="button">Agregar</button>
           </div>
 

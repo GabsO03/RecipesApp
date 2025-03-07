@@ -93,9 +93,9 @@
                     <mat-icon>timer</mat-icon><span class="pt-1 ml-1">{{ receta.time }}</span>
                 </p>
                 <p>
-                    <span *ngFor="let category of receta.categories"
+                    <span *ngFor="let tag of receta.tags"
                     class="px-2 py-1 mr-3 rounded-xl bg-orange-900 font-montserrat text-md text-white">
-                        {{ category | capitalizeWord }}
+                        {{ tag | capitalizeWord }}
                     </span>
                 </p>
             </div>

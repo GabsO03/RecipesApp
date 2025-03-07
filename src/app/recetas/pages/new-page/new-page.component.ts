@@ -17,7 +17,7 @@ export class NewPageComponent implements OnInit {
 
   public recipeForm: FormGroup;
   public newIngredient: FormControl = new FormControl('');
-  public newCategoria: FormControl = new FormControl('');
+  public newEtiqueta: FormControl = new FormControl('');
   public existingIngredients?:string[];
   public yaExiste: boolean = false;
 
@@ -35,7 +35,7 @@ export class NewPageComponent implements OnInit {
       description: new FormControl('',Validators.required),
       ingredients: this.fb.array([], Validators.required),
       time: new FormControl(0, [Validators.required, Validators.min(1)]),
-      categories: this.fb.array([], Validators.required),
+      tags: this.fb.array([], Validators.required),
       instructions: new FormControl('', Validators.required),
       alt_img: ['']
     });
@@ -53,8 +53,8 @@ export class NewPageComponent implements OnInit {
           this.onAddToIngredients(ing);
         });
 
-        receta.categories.forEach((cat: string) => {
-          this.onAddToCategorias(cat);
+        receta.tags.forEach((cat: string) => {
+          this.onAddToTags(cat);
         });
 
         this.recipeForm.reset({ ...receta, time: receta.time.replace(' minutos', '').trim() }); //Esto es porque el tiempo lo quiero en número
@@ -75,7 +75,7 @@ export class NewPageComponent implements OnInit {
       description: this.recipeForm.value.description ?? '',
       ingredients: this.recipeForm.value.ingredients ?? [],
       time: (this.recipeForm.value.time ? this.recipeForm.value.time : 0) + ' minutos',
-      categories: this.recipeForm.value.categories ?? [],
+      tags: this.recipeForm.value.categories ?? [],
       instructions: instructiones,
       alt_img: this.recipeForm.value.alt_img ?? '',
       createdAt: this.recipeForm.value.createdAt ?? new Date().toISOString(),
@@ -261,39 +261,39 @@ export class NewPageComponent implements OnInit {
 
 
   //PARA LAS CATEGORIAS
-  get categories(): FormArray {
-    return this.recipeForm.get('categories') as FormArray;
+  get tags(): FormArray {
+    return this.recipeForm.get('tags') as FormArray;
   }
 
-  onAddToCategorias(valor?: string):void {
+  onAddToTags(valor?: string):void {
     //Esto cuando se introduce manualmente para la edición
     if(valor) {
-      this.categories.push(
+      this.tags.push(
         this.fb.control(valor)
       );
       return;
     }
     else {
-      if ( this.newCategoria.invalid ) return;
+      if ( this.newEtiqueta.invalid ) return;
 
-      const newCategoria = this.newCategoria.value;
+      const newEtiqueta = this.newEtiqueta.value;
 
-      const existe = this.categories.value.some((cat: string) => 
-        cat.toLowerCase() === newCategoria.toLowerCase()
+      const existe = this.tags.value.some((cat: string) => 
+        cat.toLowerCase() === newEtiqueta.toLowerCase()
       );
 
       if (!existe) {
-        this.categories.push(
-          this.fb.control( newCategoria )
+        this.tags.push(
+          this.fb.control( newEtiqueta )
         );
       }
 
-      this.newCategoria.setValue(null);
+      this.newEtiqueta.setValue(null);
     }
   }
 
   onDeleteCategoria( index:number ):void {
-    this.categories.removeAt(index);
+    this.tags.removeAt(index);
   }
 
 }

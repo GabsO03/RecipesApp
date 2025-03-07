@@ -68,9 +68,9 @@
             <div class="p-3 my-4 flex flex-row items-center justify-between border border-black rounded-lg w-full">
                 <p class="flex items-center text-lg mr-8"><mat-icon>timer</mat-icon><span class="pt-1 ml-1">{{ selectedRecipe.time }}</span></p>
                 <p>
-                    <span *ngFor="let category of selectedRecipe.categories"
+                    <span *ngFor="let tag of selectedRecipe.tags"
                     class="px-2 py-1 mr-3 rounded-xl bg-orange-900 font-montserrat text-md text-white">
-                        {{ category | capitalizeWord }}
+                        {{ tag | capitalizeWord }}
                     </span>
                 </p>
             </div>
