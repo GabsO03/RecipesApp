@@ -21,6 +21,9 @@ export class LayoutPageComponent {
     const drawer = document.getElementById('drawer-navigation');
     if (drawer) {
       drawer.classList.toggle('-translate-x-full');
+      drawer.addEventListener('mouseleave', () => {
+        drawer.classList.add('-translate-x-full');
+      });
     }
   }
 
