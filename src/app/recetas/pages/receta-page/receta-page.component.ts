@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Receta } from '../../interfaces/receta.interface';
+import { Recipe } from '../../interfaces/receta.interface';
 import { RecetasService } from '../../services/recetas.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { delay, filter, switchMap, tap } from 'rxjs';
@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styles: ``
 })
 export class RecetaPageComponent implements OnInit {
-  public receta?: Receta;
+  public receta?: Recipe;
   public esAdmin!: boolean;
 
   constructor(
@@ -61,7 +61,6 @@ export class RecetaPageComponent implements OnInit {
       this.recetasService.deleteRecetaById( this.receta!.id )
       .pipe(
         filter ((result:boolean) => result),
-        switchMap( ()=> this.recetasService.deleteRecetaById( this.receta!.id) ),
         filter ( (wasDeleted:boolean)=>wasDeleted),
         tap ( wasDeleted => console.log({wasDeleted})
         )

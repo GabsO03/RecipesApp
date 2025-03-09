@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Receta } from '../../interfaces/receta.interface';
+import { Recipe } from '../../interfaces/receta.interface';
 import { delay } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
@@ -12,7 +12,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 })
 export class ConfirmDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
-  readonly data = inject<Receta>(MAT_DIALOG_DATA);
+  readonly data = inject<Recipe>(MAT_DIALOG_DATA);
   public animar: boolean = false;
 
   onNoClick(): void {

@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-// import { environment } from '../../environments/environment';
 import { environment } from '../../environments/environment.prod';
 import { catchError, delay, map, Observable, of, tap } from 'rxjs';
-import { Receta } from '../interfaces/receta.interface';
+import { Recipe } from '../interfaces/receta.interface';
 
 @Injectable({providedIn: 'root'})
 export class RecetasService {
@@ -12,7 +11,7 @@ export class RecetasService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getIngredients(param: string): Observable<string[]>{
+  getIngredients(param: string): Observable<{ id: number; name: string }[]>{
     return this.httpClient.get<any>(`${ this.baseURL }/api/v1/ingredients?q=${param}`)
     .pipe(
       map(ingredientes => ingredientes.data)
@@ -26,14 +25,14 @@ export class RecetasService {
     )   
   }
 
-  getRecetas(): Observable<Receta[]>{
+  getRecetas(): Observable<Recipe[]>{
     return this.httpClient.get<any>(`${ this.baseURL }/api/v1/recipes`)
     .pipe(
       map(recetario => recetario.data)
     );
   }
 
-  getRecetaById(id: number): Observable<Receta>{
+  getRecetaById(id: number): Observable<Recipe>{
     return this.httpClient.get<any>(`${ this.baseURL }/api/v1/recipes/${ id }`)
     .pipe(
       delay(800),
@@ -42,22 +41,23 @@ export class RecetasService {
     );
   }
 
-  getSuggestions( entrada: string): Observable<Receta[]>{
+  getSuggestions( entrada: string): Observable<Recipe[]>{
     return this.httpClient.get<any>(`${ this.baseURL }/api/v1/recipes?q=${entrada}&limit=6`)
     .pipe(
       map(recetario => recetario.data)
     );
   }
 
-  addReceta( receta: Receta ): Observable<Receta> {
+  addReceta( receta: Recipe ): Observable<Recipe> {
     return this.httpClient.post<any>(`${this.baseURL}/api/v1/recipes`, receta)
     .pipe(
       map(resultado => resultado.data)
     );
   }
 
-  updateReceta( receta: Receta ): Observable<Receta>{
+  updateReceta( receta: Recipe ): Observable<Recipe>{
     if ( !receta.id ) throw Error ('Receta id is required');
+
     return this.httpClient.patch<any>(`${this.baseURL}/api/v1/recipes/${ receta.id }`, receta)
     .pipe(
       map(resultado => resultado.data)

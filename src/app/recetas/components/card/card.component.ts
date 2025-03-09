@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Receta } from '../../interfaces/receta.interface';
+import { Recipe } from '../../interfaces/receta.interface';
 import { RecetasService } from '../../services/recetas.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,7 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class CardComponent implements OnInit{
 
   @Input()
-  public receta!: Receta;
+  public receta!: Recipe;
   @Input()
   public index!: number;
 
@@ -57,7 +57,6 @@ export class CardComponent implements OnInit{
       this.recetasService.deleteRecetaById( this.receta!.id )
       .pipe(
         filter ((result:boolean) => result),
-        switchMap( ()=> this.recetasService.deleteRecetaById( this.receta!.id) ),
         filter ( (wasDeleted:boolean)=>wasDeleted),
         tap ( wasDeleted => console.log({wasDeleted})
         )

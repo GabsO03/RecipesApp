@@ -15,6 +15,8 @@ import { RecipeImagePipe } from './pipes/recipe-image.pipe';
 import { CapitalizeWordPipe } from './pipes/category-capital.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { IngredientPipe } from './pipes/ingredient.pipe';
+import { DescripcionPipe } from './pipes/descripcion.pipe';
 
 
 @NgModule({
@@ -28,6 +30,8 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     RecipeImagePipe,
     CapitalizeWordPipe,
     ConfirmDialogComponent,
+    IngredientPipe,
+    DescripcionPipe,
   ],
   imports: [
     CommonModule,

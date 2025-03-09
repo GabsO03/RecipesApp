@@ -83,7 +83,7 @@
                 <ul class="grid grid-cols-1 lg:grid-cols-5 md:grid-cols-2 text-lg md:text-xl">
                     <li *ngFor="let ingredient of receta.ingredients"
                     class="list-disc ml-5 mb-2 text-left">
-                        {{ ingredient | capitalizeWord }}
+                        {{ ingredient | ingredientPipe | capitalizeWord }}
                     </li>
                 </ul>
             </div>
@@ -105,7 +105,7 @@
                 <ul>
                     <li *ngFor="let instruction of receta.instructions"
                     class="list-decimal ml-5 mb-1 text-lg lg:text-xl">
-                        {{ instruction }}
+                        {{ instruction | capitalizeWord }}
                     </li>
                 </ul>
             </div>

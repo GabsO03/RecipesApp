@@ -28,7 +28,7 @@
                     required
                     formControlName="name"
                   />
-                  <span *ngIf="isValidField('name')" class="text-red-00">
+                  <span *ngIf="isValidField('name')" class="text-red-600">
                     {{ getFieldError('name') }}
                   </span>
                 </mat-form-field>
@@ -41,7 +41,7 @@
                   required
                   formControlName="time"
                   />
-                  <span *ngIf="isValidField('time')" class="text-red-00">
+                  <span *ngIf="isValidField('time')" class="text-red-600">
                     {{ getFieldError('time') }}
                   </span>
               </mat-form-field>
@@ -55,13 +55,14 @@
                 required
                 formControlName="description"
                 />
-              <span *ngIf="isValidField('description')" class="text-red-00">
+              <span *ngIf="isValidField('description')" class="text-red-600">
                 {{ getFieldError('description') }}
               </span>
           </mat-form-field>
 
+          <mat-divider></mat-divider>
 
-          <div class="mb-3 flex flex-col w-full">
+          <div class="my-3 flex flex-col w-full">
             <label class="text-gray-800 font-medium">
               Etiquetas {{ tags.controls.length === 0 ? '( Tus etiquetas se verán aquí )' : '' }}
             </label>
@@ -75,7 +76,7 @@
             </div>   
           </div>
 
-          <div class="flex items-start justify-start py-2">
+          <div class="flex items-start justify-start py-2" *ngIf="tags.controls.length < 3">
             <mat-form-field class="w-2/3 mr-5">
               <mat-label>Agregar etiqueta</mat-label>
               <input
@@ -83,7 +84,7 @@
               type="text"
               [formControl]="newEtiqueta"
               />
-              <span *ngIf="isValidField('tags')" class="text-red-00">
+              <span *ngIf="isValidField('tags')" class="text-red-600">
                 {{ getFieldError('tags') }}
               </span>
             </mat-form-field>
@@ -91,70 +92,115 @@
             type="button">Agregar</button>
           </div>
 
+          <mat-divider></mat-divider>
 
-
-          <mat-form-field class="w-full">
-              <mat-label>Instrucciones</mat-label>
-              <textarea
-                matInput
-                required
-                formControlName="instructions"
-              ></textarea>
-              <span *ngIf="isValidField('instructions')" class="text-red-00">
-                {{ getFieldError('instructions') }}
-              </span>
-          </mat-form-field>
-
-          <mat-form-field class="col-12 sm:col-6">
+          <mat-form-field class="mt-5">
             <mat-label>Alternative Image</mat-label>
             <input
             matInput
             type="text"
             formControlName="alt_img"
             />
-            <span *ngIf="isValidField('alt_img')" class="text-red-00">
+            <span *ngIf="isValidField('alt_img')" class="text-red-600">
               {{ getFieldError('alt_img') }}
             </span>
           </mat-form-field>
 
-          <mat-form-field class="w-full">
-              <mat-label>Agregar ingrediente</mat-label>
-              <input
-                matInput
-                type="text"
+          <mat-divider></mat-divider>
+
+          <label class="text-gray-800 text-xl font-semibold">
+            Ingredientes
+          </label>
+          <div class="mb-2 flex items-center justify-between">
+            <div class="relative flex items-center max-w-[8rem]">
+                <input type="number" id="quantity-input" class="border-4 border-gray-500 h-11 rounded-xl text-center text-gray-900 text-sm focus:ring-slate-500 focus:border-slate-500 w-full py-2.5 bg-transparent" placeholder="999"
+                [formControl]="ingredientAmount"
+                />
+            </div>
+
+            <div class="flex justify-center">
+              <select class="text-sm font-medium transition duration-75 border-4 border-gray-500 rounded-lg shadow-sm focus:border-slate-600 focus:ring-1 focus:ring-inset focus:ring-slate-600 bg-transparent mx-auto"
+              [formControl]="ingredientUnit"
+              >
+                <option *ngFor="let unidad of unidadesMedida"
+                value="{{ unidad }}"
+                class="bg-transparent">{{ unidad }}</option>
+              </select>
+            </div>
+
+            <div class="rounded-lg">
+              <div class="relative bg-inherit">
+                <input type="text" class="peer bg-transparent h-10 w-72 rounded-lg text-gray-700 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-slate-600 focus:outline-none focus:border-slate-600" placeholder="Zanahoria"
                 [formControl]="newIngredient"
                 (input)="consigueIngredientes()"
                 [matAutocomplete]="auto"
-              />
-          </mat-form-field>
+                /><label for="username" class="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">Agregar ingrediente</label>
+              </div>
+            </div>
+
+            <button mat-flat-button class="mt-2" (click)="onAddToIngredients()"
+            type="button">Agregar</button>
+          </div>
+
           <mat-autocomplete autoActiveFirstOption
-          #auto="matAutocomplete"
-          (optionSelected)="onAddToIngredients()">
+          #auto="matAutocomplete">
             <mat-option *ngIf="newIngredient.value && !yaExiste"
             [value]="newIngredient.value">
               {{ newIngredient.value | capitalizeWord }}
             </mat-option>
-            <mat-option *ngFor="let ingrediente of existingIngredients" [value]="ingrediente">
-                {{ ingrediente | capitalizeWord }}
+            <mat-option *ngFor="let ingrediente of existingIngredients" [value]="ingrediente.name">
+                {{ ingrediente.name | capitalizeWord }}
             </mat-option>
           </mat-autocomplete>
-          <div class="mb-3 flex flex-col w-full">
+
+          <div class="mb-4 flex flex-col w-full">
             <label class="text-gray-800 font-medium">
-              Ingredientes {{ ingredients.controls.length === 0 ? '( Tus ingredientes se verán aquí )' : '' }}
-            </label>
-            
+              {{ ingredients.controls.length === 0 ? '( Tus ingredientes se verán aquí )' : '' }}
+            </label>            
             <div class="w-full flex flex-wrap gap-2" formArrayName="ingredients">
               <div *ngFor="let ingredient of ingredients.controls; let i = index" 
                     class="flex items-center bg-gray-100 text-gray-800 font-medium px-3 py-1 rounded-lg text-sm">
-                <p>{{ ingredient.value | capitalizeWord }}</p>
+                <p>{{ ingredient.value | ingredientPipe | capitalizeWord }}</p>
                 <button type="button" (click)="onDeleteIngredient(i)"> <mat-icon>close</mat-icon> </button>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+          
+          <div class="flex items-start justify-start mt-3 py-2">
+            <mat-form-field class="w-2/3 mr-5">
+              <mat-label>Agregar instrucción</mat-label>
+              <input
+              matInput
+              type="text"
+              [formControl]="newInstruccion"
+              />
+            </mat-form-field>
+            <button mat-flat-button class="mt-2" (click)="onAddToSteps()"
+            type="button">Agregar</button>
+          </div>
+
+          <div class="mb-5 flex flex-col w-full">
+            <label class="text-gray-800 font-medium">
+              Pasos {{ instructions.controls.length === 0 ? '( Tus pasos se verán aquí )' : '' }}
+            </label>
+            
+            <div class="w-full flex flex-col" formArrayName="instructions">
+              <pre>{{ instructions.controls }}</pre>
+              <div *ngFor="let instruction of instructions.controls; let i = index" 
+                    class="flex justify-between items-center bg-gray-100 text-gray-800 font-medium mb-1 px-3 py-1 rounded-lg text-sm w-full">
+                <p>{{ instruction.value | capitalizeWord }}</p>
+                <button type="button" (click)="onDeleteStep(i)"> <mat-icon>close</mat-icon> </button>
               </div>
             </div>   
           </div>
 
         </form>
 
-        <div class="flex justify-between">
+        <mat-divider></mat-divider>
+
+        <div class="flex justify-between mt-5">
           <button mat-flat-button
           *ngIf="currentReceta.id"
           (click)="onDeleteReceta()"

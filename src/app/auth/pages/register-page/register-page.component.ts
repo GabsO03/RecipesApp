@@ -18,7 +18,7 @@ export class RegisterPageComponent {
     private router: Router
   ) { 
     this.userForm = this.fb.group({
-      user: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required])
     });
   }
@@ -31,7 +31,7 @@ export class RegisterPageComponent {
     
     this.authService.addUser(this.userForm.value)
     .subscribe( user => {
-      this.authService.login(user.user, user.email)
+      this.authService.login(user.username, user.email)
       .subscribe( user => {
         this.router.navigate(['/']);
       })

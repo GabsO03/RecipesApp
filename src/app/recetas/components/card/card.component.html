@@ -1,4 +1,6 @@
 <div class="group rounded-xl overflow-hidden shadow-lg flex flex-col">
+
+    <!-- La parte de la imagen y acciones -->
     <div class="relative">
       <div class="h-150 w-full">
         <div class="w-full lg:h-56 md:h-60 sm:h-64 overflow-hidden">
@@ -45,12 +47,15 @@
         </mat-card-actions>
       </div>
     </div>
+
+
+    <!-- Breve descripción -->
     <div class="px-6 py-4 mb-auto bg-[#63300e] group-hover:bg-[#743911] font-raleway">
         <a [routerLink]="['/recetas/', receta.id]"
         class="font-medium text-white text-xl lg:text-2xl block hover:text-[#eec5b0] transition duration-300 ease-in-out mb-2">
           {{ receta.name }}
         </a>
-        <p class="inline-block text-white text-lg">{{ receta.description }}</p>
+        <p class="inline-block text-white text-lg">{{ receta.description | descripcionPipe }}</p>
 
         <div class="flex flex-wrap justify-between">
           <span class="py-1 text-xs font-regular text-white mr-1 flex flex-row items-center">

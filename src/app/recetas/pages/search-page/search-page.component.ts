@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { RecetasService } from '../../services/recetas.service';
-import { Receta } from '../../interfaces/receta.interface';
+import { Recipe } from '../../interfaces/receta.interface';
 import { debounceTime, delay, of, tap } from 'rxjs';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
@@ -13,8 +13,8 @@ import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material
 export class SearchPageComponent {
 
   public searchInput = new FormControl('');
-  public recetas?:Receta[];
-  public selectedRecipe?:Receta;
+  public recetas?:Recipe[];
+  public selectedRecipe?:Recipe;
 
   constructor(
     private recetasService:RecetasService
@@ -25,7 +25,7 @@ export class SearchPageComponent {
       debounceTime(300)
     ).subscribe(value =>{
       if ( value ) {
-        this.recetasService.getSuggestions( value! )
+        this.recetasService.getSuggestions( value.toLowerCase() )
         .subscribe( recetas => this.recetas = recetas )
       }
     })
@@ -37,7 +37,7 @@ export class SearchPageComponent {
       return;
     }
 
-    const receta: Receta = event.option.value;
+    const receta: Recipe = event.option.value;
     this.searchInput.setValue( receta.name );
     this.selectedRecipe = receta;
   }

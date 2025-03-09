@@ -1,12 +1,18 @@
-export interface Receta {
+export interface Recipe {
     id:           string;
     name:         string;
     description:  string;
-    ingredients:  string[];
-    tags:   string[];
+    ingredients:  Ingredient[];
+    tags:         string[];
     time:         string;
     instructions: string[];
-    alt_img?:     string;
-    createdAt:    string;
-    updatedAt:    string;
+    created_at:   Date;
+    updated_at:   Date;
+    alt_img:      string;
+}
+
+export interface Ingredient {
+    amount:         string;
+    unitMeasure:     string;
+    nameIngredient: string;
 }

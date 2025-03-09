@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RecetasService } from '../../services/recetas.service';
-import { Receta } from '../../interfaces/receta.interface';
+import { Ingredient, Recipe } from '../../interfaces/receta.interface';
 import { debounceTime, filter, switchMap, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,10 +16,17 @@ import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-
 export class NewPageComponent implements OnInit {
 
   public recipeForm: FormGroup;
-  public newIngredient: FormControl = new FormControl('');
   public newEtiqueta: FormControl = new FormControl('');
-  public existingIngredients?:string[];
-  public yaExiste: boolean = false;
+  public newInstruccion: FormControl = new FormControl('');
+
+  public newIngredient: FormControl = new FormControl('');
+  public ingredientAmount: FormControl = new FormControl('', Validators.min(0));
+  public ingredientUnit: FormControl = new FormControl('');
+
+  public existingIngredients?: { id: number; name: string }[] = [];
+  public yaExiste = false;
+
+  unidadesMedida: string[] = ['kg', 'gr', 'ltr', 'ml', 'oz', 'tbspn', 'tspn'];
 
   constructor(
     private fb: FormBuilder,
@@ -36,7 +43,7 @@ export class NewPageComponent implements OnInit {
       ingredients: this.fb.array([], Validators.required),
       time: new FormControl(0, [Validators.required, Validators.min(1)]),
       tags: this.fb.array([], Validators.required),
-      instructions: new FormControl('', Validators.required),
+      instructions: this.fb.array([], Validators.required),
       alt_img: ['']
     });
   }
@@ -49,12 +56,16 @@ export class NewPageComponent implements OnInit {
       ).subscribe ( receta => {
         if ( !receta ) return this.router.navigateByUrl('/');
 
-        receta.ingredients.forEach((ing: string) => {
+        receta.ingredients.forEach((ing: Ingredient) => {
           this.onAddToIngredients(ing);
         });
 
-        receta.tags.forEach((cat: string) => {
-          this.onAddToTags(cat);
+        receta.tags.forEach((tag: string) => {
+          this.onAddToTags(tag);
+        });
+
+        receta.instructions.forEach((step: string) => {
+          this.onAddToSteps(step);
         });
 
         this.recipeForm.reset({ ...receta, time: receta.time.replace(' minutos', '').trim() }); //Esto es porque el tiempo lo quiero en número
@@ -62,24 +73,18 @@ export class NewPageComponent implements OnInit {
       })
   }
 
-  get currentReceta(): Receta{
-    let instructiones: string[] = [];
-    if (this.recipeForm.value.instructions) { //Esto por sí es edición
-      if (Array.isArray(this.recipeForm.value.instructions)) instructiones = this.recipeForm.value.instructions
-      else instructiones = this.recipeForm.value.instructions.split('.')
-    }
-
-    const receta: Receta = {
+  get currentReceta(): Recipe{
+    const receta: Recipe = {
       id: this.recipeForm.value.id ?? '',
       name: this.recipeForm.value.name ?? '',
       description: this.recipeForm.value.description ?? '',
       ingredients: this.recipeForm.value.ingredients ?? [],
       time: (this.recipeForm.value.time ? this.recipeForm.value.time : 0) + ' minutos',
-      tags: this.recipeForm.value.categories ?? [],
-      instructions: instructiones,
+      tags: this.recipeForm.value.tags ?? [],
+      instructions: this.recipeForm.value.instructions ?? [],
       alt_img: this.recipeForm.value.alt_img ?? '',
-      createdAt: this.recipeForm.value.createdAt ?? new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      created_at: this.recipeForm.value.created_at ?? new Date(),
+      updated_at: new Date()
     };
     
     return receta;
@@ -122,7 +127,6 @@ export class NewPageComponent implements OnInit {
       this.recetasService.deleteRecetaById( this.currentReceta.id )
       .pipe(
         filter ((result:boolean) => result),
-        switchMap( ()=> this.recetasService.deleteRecetaById( this.currentReceta.id) ),
         filter ( (wasDeleted:boolean)=>wasDeleted),
         tap ( wasDeleted => console.log({wasDeleted})
         )
@@ -170,7 +174,7 @@ export class NewPageComponent implements OnInit {
 
           //Esto para que no se vea doble
           this.yaExiste = this.existingIngredients.some(ingr => 
-            ingr.toLowerCase().localeCompare(this.newIngredient.value.toLowerCase(), 'es', { sensitivity: 'base' }) === 0
+            ingr.name.toLowerCase().localeCompare(this.newIngredient.value.toLowerCase(), 'es', { sensitivity: 'base' }) === 0
           );
       })
     })
@@ -181,7 +185,7 @@ export class NewPageComponent implements OnInit {
   }
 
   //Para añadir un ingrediente
-  onAddToIngredients(valor?: string):void {
+  onAddToIngredients(valor?: Ingredient):void {
     //Esto cuando se introduce manualmente para la edición
     if(valor) {
       this.ingredients.push(
@@ -190,38 +194,47 @@ export class NewPageComponent implements OnInit {
       return;
     }
     else {
-      if ( this.newIngredient.invalid ) return;
+      if ( this.newIngredient.invalid || this.ingredientAmount.invalid || this.ingredientUnit.invalid ) return;
 
-      const newIngredient = this.newIngredient.value;
+      const newIngredient = this.newIngredient.value.trim();
 
       if (newIngredient) {//Para que no haga nada si está vacío
-        const estaEnArray = this.ingredients.value.some((ing: string) => ing.toLowerCase() === newIngredient.toLowerCase()
+        const estaEnArray = this.ingredients.value.some((ing: Ingredient) => ing.nameIngredient === newIngredient.toLowerCase()
         ); //Esto para que no se ejecute nada si ya está en el array y no se ingrese doble
         let existeEnBd = false; 
   
         if (!estaEnArray) {
 
           if (this.existingIngredients && this.existingIngredients.length > 0) {
-            existeEnBd = this.existingIngredients.some((ing: string) => ing.toLowerCase() === newIngredient.toLowerCase());
+            existeEnBd = this.existingIngredients.some((ing) => ing.name.toLowerCase() === newIngredient.toLowerCase());
           }; //Por si directamente no existe en la bbdd
+
+          const ingrediente: Ingredient = {
+            amount: this.ingredientAmount.value,
+            unitMeasure: this.ingredientUnit.value,
+            nameIngredient: newIngredient
+          }
 
           if (existeEnBd) { //Si no está lo agrega
             this.ingredients.push(
-              this.fb.control( newIngredient )
+              this.fb.control( ingrediente )
             );
           }
           else {
-            this.recetasService.addIngredient(this.newIngredient.value).subscribe(respuesta => {
+            this.recetasService.addIngredient(newIngredient).subscribe(respuesta => {
               if (respuesta) {
                 this.ingredients.push(
-                  this.fb.control( newIngredient )
+                  this.fb.control( ingrediente )
                 );
               }
             });
           }
         }
 
-        this.newIngredient.setValue(null);
+        this.newIngredient.reset();
+        this.ingredientAmount.reset();
+        this.ingredientUnit.reset();
+        
         this.existingIngredients = [];
 
       }
@@ -296,4 +309,34 @@ export class NewPageComponent implements OnInit {
     this.tags.removeAt(index);
   }
 
+
+  //PARA LAS INSTRUCCIONES
+  get instructions(): FormArray {
+    return this.recipeForm.get('instructions') as FormArray;
+  }
+
+  onAddToSteps(valor?: string):void {
+    //Esto cuando se introduce manualmente para la edición
+    if(valor) {
+      this.instructions.push(
+        this.fb.control(valor)
+      );
+      return;
+    }
+    else {
+      if ( this.newInstruccion.invalid ) return;
+
+      const newInstruccion = this.newInstruccion.value;
+ 
+      this.instructions.push(
+        this.fb.control( newInstruccion )
+      );
+
+      this.newInstruccion.setValue(null);
+    }
+  }
+
+  onDeleteStep( index:number ):void {
+    this.instructions.removeAt(index);
+  }
 }

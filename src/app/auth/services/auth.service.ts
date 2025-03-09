@@ -39,14 +39,17 @@ export class AuthService {
     }
     
 
-    login (user: string, email: string):Observable<User> {
-        return this.httpClient.get<any>(`${ this.baseUrl }/api/v1/users?user=${ user }&email=${ email }`)
+    login (username: string, email: string):Observable<User | false> {
+        return this.httpClient.get<any>(`${ this.baseUrl }/api/v1/users?username=${ username }&email=${ email }`)
         .pipe(
+            catchError((err) => of(false)),
             map( (respuesta) => {
-                const user = respuesta.data;
-                this.user = user
-                localStorage.setItem('token', user.id.toString())
-                return user;
+                if (respuesta) {
+                    const user = respuesta.data;
+                    this.user = user
+                    localStorage.setItem('token', user.id.toString())
+                    return user;
+                }
             })
         )
     }

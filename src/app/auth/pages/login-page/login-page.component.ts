@@ -11,6 +11,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 export class LoginPageComponent {
 
   public userForm: FormGroup;
+  public fail = false;
 
   constructor(
     private fb: FormBuilder,
@@ -18,7 +19,7 @@ export class LoginPageComponent {
     private router: Router
   ) { 
     this.userForm = this.fb.group({
-      user: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required])
     });
   }
@@ -30,9 +31,10 @@ export class LoginPageComponent {
     }
 
     
-    this.authService.login(this.userForm.get('user')?.value, this.userForm.get('email')?.value)
+    this.authService.login(this.userForm.get('username')?.value, this.userForm.get('email')?.value)
     .subscribe( user => {
-      this.router.navigate(['/']);
+      if (!user) this.fail = true;
+      else this.router.navigate(['/']);
     })
 
     this.userForm.reset();

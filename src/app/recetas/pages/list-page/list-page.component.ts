@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Receta } from '../../interfaces/receta.interface';
+import { Recipe } from '../../interfaces/receta.interface';
 import { RecetasService } from '../../services/recetas.service';
 import { tap } from 'rxjs';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -10,7 +10,7 @@ import { AuthService } from '../../../auth/services/auth.service';
   styles: ``
 })
 export class ListPageComponent {
-  public recetas: Receta[] = [];
+  public recetas: Recipe[] = [];
   public esAdmin!: boolean;
   constructor(
     private recetasService: RecetasService,
